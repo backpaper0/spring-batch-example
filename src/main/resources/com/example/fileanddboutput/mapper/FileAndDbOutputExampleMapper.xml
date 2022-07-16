@@ -1,0 +1,26 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.fileanddboutput.mapper.FileAndDbOutputExampleMapper">
+
+    <select id="selectByFlagIsFalse" resultType="com.example.fileanddboutput.model.FileAndDbOutputExample">
+        select
+            id,
+            name,
+            flag
+        from
+            file_and_db_output_example
+        where
+            flag = false
+        order by
+            id asc
+    </select>
+
+    <update id="updateFlagToTrue">
+        update
+            file_and_db_output_example
+        set
+            flag = true
+        where
+            id = #{id}
+    </update>
+
+</mapper>
