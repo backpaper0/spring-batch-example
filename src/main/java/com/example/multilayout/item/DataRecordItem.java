@@ -9,4 +9,5 @@ public class DataRecordItem extends RecordBaseItem {
 
 	private String id;
 	private String name;
+	private int number;
 }

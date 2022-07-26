@@ -25,11 +25,11 @@ public class MultiLayoutFileOutputExampleTest extends TestBase {
 		jobLauncher.run(config.multiLayoutFileOutputJob(), new JobParameters());
 		List<String> actual = Files.readAllLines(Path.of("target/files/outputs/multilayoutoutput.txt"));
 		List<String> expected = List.of(
-				"120220726  ",
-				"200001DATA1",
-				"200002DATA2",
-				"200003DATA3",
-				"9         3");
+				"120220726     ",
+				"200001DATA1 10",
+				"200002DATA2 20",
+				"200003DATA3 30",
+				"9         3 60");
 		assertEquals(expected, actual);
 	}
 }

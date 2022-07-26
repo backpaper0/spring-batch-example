@@ -27,7 +27,8 @@ public class MultiLayoutFileInputExampleTest extends TestBase {
 	@Test
 	void test() throws Exception {
 		jobLauncher.run(config.multiLayoutFileInputJob(), new JobParameters());
-		List<? extends RecordBaseItem> items = config.multiLayoutFileInputItemWriter().getWrittenItems();
+		List<? extends RecordBaseItem> items = config.multiLayoutFileInputItemWriter()
+				.getWrittenItems();
 
 		assertEquals(7, items.size());
 		Iterator<? extends RecordBaseItem> iterator = items.iterator();
@@ -43,30 +44,36 @@ public class MultiLayoutFileInputExampleTest extends TestBase {
 		assertEquals("2", data1.getClassifier());
 		assertEquals("00001", data1.getId());
 		assertEquals("DATA1", data1.getName());
+		assertEquals(10, data1.getNumber());
 
 		DataRecordItem data2 = (DataRecordItem) iterator.next();
 		assertEquals("2", data2.getClassifier());
 		assertEquals("00002", data2.getId());
 		assertEquals("DATA2", data2.getName());
+		assertEquals(20, data2.getNumber());
 
 		DataRecordItem data3 = (DataRecordItem) iterator.next();
 		assertEquals("2", data3.getClassifier());
 		assertEquals("00003", data3.getId());
 		assertEquals("DATA3", data3.getName());
+		assertEquals(30, data3.getNumber());
 
 		DataRecordItem data4 = (DataRecordItem) iterator.next();
 		assertEquals("2", data4.getClassifier());
 		assertEquals("00004", data4.getId());
 		assertEquals("DATA4", data4.getName());
+		assertEquals(40, data4.getNumber());
 
 		DataRecordItem data5 = (DataRecordItem) iterator.next();
 		assertEquals("2", data5.getClassifier());
 		assertEquals("00005", data5.getId());
 		assertEquals("DATA5", data5.getName());
+		assertEquals(50, data5.getNumber());
 
 		// トレーラーレコード
 		TrailerRecordItem trailer = (TrailerRecordItem) iterator.next();
 		assertEquals("9", trailer.getClassifier());
 		assertEquals(5, trailer.getSize());
+		assertEquals(150, trailer.getTotal());
 	}
 }

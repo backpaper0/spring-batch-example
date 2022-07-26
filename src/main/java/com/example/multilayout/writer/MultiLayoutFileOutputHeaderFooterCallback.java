@@ -14,7 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
  * ヘッダーおよびフッターのコールバック。
  *
  */
-public class MultiLayoutFileOutputHeaderFooterCallback implements FlatFileHeaderCallback, FlatFileFooterCallback {
+public class MultiLayoutFileOutputHeaderFooterCallback
+		implements FlatFileHeaderCallback, FlatFileFooterCallback {
 
 	/**
 	 * Spring Batchが用意しているクラス。
@@ -35,7 +36,7 @@ public class MultiLayoutFileOutputHeaderFooterCallback implements FlatFileHeader
 		Object[] args = {
 				"1",
 				dateTimeFormatter.format(LocalDate.parse("2022-07-26")), // ※例を複雑にしないため日付を固定している
-				"  "
+				"     "
 		};
 		String header = String.format(format, args);
 		writer.write(header);
@@ -48,10 +49,11 @@ public class MultiLayoutFileOutputHeaderFooterCallback implements FlatFileHeader
 	 */
 	@Override
 	public void writeFooter(Writer writer) throws IOException {
-		String format = "%s" + "% 10d";
+		String format = "%s" + "% 10d" + "% 3d";
 		Object[] args = {
 				"9",
-				stepExecution.getWriteCount()
+				stepExecution.getWriteCount(),
+				stepExecution.getExecutionContext().getInt("total")
 		};
 		String footer = String.format(format, args);
 		writer.write(footer);

@@ -86,16 +86,17 @@ public class MultiLayoutFileInputExampleConfig extends ConfigBase {
 		// LineTokenizerのMapを構築する。
 		// FieldSetMapperと同じく、レコードの開始文字が1/2/9それぞれで場合分けしている。
 		FixedLengthTokenizer headerLineTokenizer = new FixedLengthTokenizer();
-		headerLineTokenizer.setColumns(new Range(1, 1), new Range(2, 9), new Range(10, 11));
+		headerLineTokenizer.setColumns(new Range(1, 1), new Range(2, 9), new Range(10, 14));
 		headerLineTokenizer.setNames("classifier", "date", "filler");
 
 		FixedLengthTokenizer dataLineTokenizer = new FixedLengthTokenizer();
-		dataLineTokenizer.setColumns(new Range(1, 1), new Range(2, 6), new Range(7, 11));
-		dataLineTokenizer.setNames("classifier", "id", "name");
+		dataLineTokenizer.setColumns(new Range(1, 1), new Range(2, 6), new Range(7, 11),
+				new Range(12, 14));
+		dataLineTokenizer.setNames("classifier", "id", "name", "number");
 
 		FixedLengthTokenizer trailerLineTokenizer = new FixedLengthTokenizer();
-		trailerLineTokenizer.setColumns(new Range(1, 1), new Range(2, 11));
-		trailerLineTokenizer.setNames("classifier", "size");
+		trailerLineTokenizer.setColumns(new Range(1, 1), new Range(2, 11), new Range(12, 14));
+		trailerLineTokenizer.setNames("classifier", "size", "total");
 
 		Map<String, LineTokenizer> tokenizers = new HashMap<>();
 		tokenizers.put("1*", headerLineTokenizer);

@@ -8,4 +8,5 @@ import lombok.EqualsAndHashCode;
 public class TrailerRecordItem extends RecordBaseItem {
 
 	private int size;
+	private int total;
 }

@@ -4,20 +4,21 @@ import java.util.List;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.builder.FlatFileItemWriterBuilder;
 import org.springframework.batch.item.file.transform.FieldExtractor;
 import org.springframework.batch.item.support.ListItemReader;
-import org.springframework.batch.item.support.PassThroughItemProcessor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.PathResource;
 
 import com.example.common.ConfigBase;
 import com.example.multilayout.item.DataRecordItem;
+import com.example.multilayout.processor.MultiLayoutFileOutputItemProcessor;
 import com.example.multilayout.writer.MultiLayoutFileOutputHeaderFooterCallback;
 
 /**
@@ -40,29 +41,37 @@ public class MultiLayoutFileOutputExampleConfig extends ConfigBase {
 		data1.setClassifier("2");
 		data1.setId("00001");
 		data1.setName("DATA1");
+		data1.setNumber(10);
 
 		DataRecordItem data2 = new DataRecordItem();
 		data2.setClassifier("2");
 		data2.setId("00002");
 		data2.setName("DATA2");
+		data2.setNumber(20);
 
 		DataRecordItem data3 = new DataRecordItem();
 		data3.setClassifier("2");
 		data3.setId("00003");
 		data3.setName("DATA3");
+		data3.setNumber(30);
 
 		List<DataRecordItem> list = List.of(data1, data2, data3);
 		return new ListItemReader<>(list);
 	}
 
 	/**
-	 * 書き出しの例なので{@link ItemProcessor}は何もしない。
+	 * {@link MultiLayoutFileOutputItemProcessor}のインスタンスを構築する。
 	 * 
-	 * @return 入力値をそのまま出力する{@link ItemProcessor}
+	 * @param stepExecution Spring Batchが用意しているクラス。クラス間の値の受け渡しができる
+	 * @return {@link MultiLayoutFileOutputItemProcessor}のインスタンス
 	 */
 	@Bean
-	public PassThroughItemProcessor<DataRecordItem> multiLayoutFileOutputItemProcessor() {
-		return new PassThroughItemProcessor<>();
+	@StepScope
+	public MultiLayoutFileOutputItemProcessor multiLayoutFileOutputItemProcessor(
+			@Value("#{stepExecution}") StepExecution stepExecution) {
+		// totalの初期値を設定する
+		stepExecution.getExecutionContext().putInt("total", 0);
+		return new MultiLayoutFileOutputItemProcessor();
 	}
 
 	/**
@@ -83,7 +92,7 @@ public class MultiLayoutFileOutputExampleConfig extends ConfigBase {
 				.name("MultiLayoutFileOutput")
 				.resource(new PathResource("target/files/outputs/multilayoutoutput.txt"))
 				.formatted()
-				.format("%s" + "%s" + "%s")
+				.format("%s" + "%-5s" + "%-5s" + "% 3d")
 				.fieldExtractor(new FieldExtractorImpl())
 				.build();
 	}
@@ -104,7 +113,7 @@ public class MultiLayoutFileOutputExampleConfig extends ConfigBase {
 		return steps.get("MultiLayoutFileOutput")
 				.<DataRecordItem, DataRecordItem> chunk(100)
 				.reader(multiLayoutFileOutputItemReader())
-				.processor(multiLayoutFileOutputItemProcessor())
+				.processor(multiLayoutFileOutputItemProcessor(null))
 				.writer(multiLayoutFileOutputItemWriter())
 				.build();
 	}
@@ -123,7 +132,8 @@ public class MultiLayoutFileOutputExampleConfig extends ConfigBase {
 			return new Object[] {
 					item.getClassifier(),
 					item.getId(),
-					item.getName()
+					item.getName(),
+					item.getNumber()
 			};
 		}
 	}
